@@ -92,6 +92,17 @@ class Value:
 
         return out
 
+    def relu(self) -> "Value":
+        r = max(0, self.data)
+        out = Value(r, (self,), "ReLU")
+
+        def _backward():
+            self.grad += (1 if r > 0 else 0) * out.grad
+
+        out._backward = _backward
+
+        return out
+
     def exp(self) -> "Value":
         x = self.data
         out = Value(math.exp(x), (self,), "exp")
